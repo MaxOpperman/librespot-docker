@@ -41,6 +41,30 @@ RUN apt-get install -y --no-install-recommends pulseaudio-utils
 RUN apt-get install -y ca-certificates
 RUN apt-get install -y libavahi-compat-libdnssd1
 RUN apt-get install -y curl
+# Install required dependencies for Puppeteer and Chromium
+RUN apt-get update && apt-get install -y \
+  ca-certificates \
+  wget \
+  fonts-liberation \
+  libappindicator3-1 \
+  libasound2 \
+  libx11-xcb1 \
+  libxcomposite1 \
+  libxdamage1 \
+  libxrandr2 \
+  xdg-utils \
+  libgdk-pixbuf2.0-0 \
+  libnss3 \
+  libatk-bridge2.0-0 \
+  libgtk-3-0 \
+  libnspr4 \
+  libgbm1 \
+  libxss1 \
+  libasound2 \
+  libxtst6 \
+  lsb-release \
+  nodejs \
+  npm
     
 RUN	rm -rf /var/lib/apt/lists/*
 
@@ -142,5 +166,15 @@ COPY app/bin/post-event-data.sh /app/bin/
 
 RUN chmod u+x /app/bin/*.sh
 
-WORKDIR /app/bin
-ENTRYPOINT ["/app/bin/run-librespot.sh"]
+WORKDIR /app
+
+# Copy the package.json and package-lock.json (if available) first, for npm install
+COPY ./bin/oauth/package.json ./bin/oauth/package-lock.json /app/
+RUN npm install
+
+# Copy the .env file to the container
+COPY ./bin/oauth/.env /app/.env
+COPY ./bin/oauth/puppeteer-oauth.js /app/puppeteer-oauth.js
+
+# Ensure the script is run in the correct directory
+ENTRYPOINT ["node", "/app/puppeteer-oauth.js"]

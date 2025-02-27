@@ -316,7 +316,7 @@ fi
 
 if [[ -n "${ENABLE_OAUTH}" ]]; then
     if [[ "${ENABLE_OAUTH^^}" == "HEADLESS" ]]; then
-        CMD_LINE="$CMD_LINE --enable-oauth --oauth-port 0"    
+        CMD_LINE="$CMD_LINE --enable-oauth --oauth-port 0 | tee oauth.txt"    
     fi
 fi
 

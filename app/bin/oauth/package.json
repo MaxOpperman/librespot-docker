@@ -1,0 +1,8 @@
+{
+    "name": "spotify-oauth-automation",
+    "version": "1.0.0",
+    "dependencies": {
+        "puppeteer": "^24.1.1",
+        "dotenv": "^16.4.7"
+    }
+}
