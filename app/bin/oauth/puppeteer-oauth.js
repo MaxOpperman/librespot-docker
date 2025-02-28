@@ -7,13 +7,13 @@ const email = process.env.SPOTIFY_EMAIL;
 const password = process.env.SPOTIFY_PWD;
 
 // start librespot
-const cp = spawn('sh', ['run-librespot.sh'], {
+const cp = spawn('bash', ['run-librespot.sh'], {
   stdio: ['pipe', 'inherit', 'inherit'],
   env: { ...process.env },
 });
 
-// first sleep for 2 seconds to allow librespot to start
-setTimeout(spotifyLogin, 2000);
+// first sleep for 3 seconds to allow librespot to start
+setTimeout(spotifyLogin, 3000);
 
 async function spotifyLogin() {
   // Read oauth.txt
