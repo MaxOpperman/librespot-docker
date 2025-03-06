@@ -170,7 +170,7 @@ if [ "${ENABLE_CACHE^^}" = "Y" ]; then
         mkdir -p /tmp/cache
         CMD_LINE="$CMD_LINE --cache /tmp/cache"
     fi
-fi 
+fi
 
 if [ "${ENABLE_SYSTEM_CACHE^^}" = "Y" ]; then
     if [ -w "$DIRECTORY_NAME_DATA_SYSTEM_CACHE" ]; then
@@ -316,15 +316,19 @@ fi
 
 if [[ -n "${ENABLE_OAUTH}" ]]; then
     if [[ "${ENABLE_OAUTH^^}" == "HEADLESS" ]]; then
-        CMD_LINE="$CMD_LINE --enable-oauth --oauth-port 0 | tee oauth.txt"    
+        CMD_LINE="$CMD_LINE --enable-oauth --oauth-port 0"
     fi
+fi
+
+if [ "${AUTO_OAUTH^^}" = "Y" ]; then
+    CMD_LINE="$CMD_LINE | tee oauth.txt"
 fi
 
 if [[ -n "${ADDITIONAL_ARGUMENTS}" ]]; then
     echo "ADDITIONAL_ARGUMENTS=[${ADDITIONAL_ARGUMENTS}]"
     CMD_LINE="$CMD_LINE ${ADDITIONAL_ARGUMENTS}"
 else
-    echo "Additional arguments have not been specified." 
+    echo "Additional arguments have not been specified."
 fi
 
 if [[ -z "${LOG_COMMAND_LINE}" || "${LOG_COMMAND_LINE^^}" = "Y" ]]; then

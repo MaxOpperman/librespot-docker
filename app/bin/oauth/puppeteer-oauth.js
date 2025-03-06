@@ -3,8 +3,8 @@ const fs = require('fs');
 const { spawn } = require("child_process");
 const puppeteer = require('puppeteer');
 
-const email = process.env.SPOTIFY_EMAIL;
-const password = process.env.SPOTIFY_PWD;
+const email = process.env.SPOTIFY_OAUTH_EMAIL;
+const password = process.env.SPOTIFY_OAUTH_PWD;
 
 // start librespot
 const cp = spawn('bash', ['run-librespot.sh'], {
@@ -12,8 +12,12 @@ const cp = spawn('bash', ['run-librespot.sh'], {
   env: { ...process.env },
 });
 
-// first sleep for 3 seconds to allow librespot to start
-setTimeout(spotifyLogin, 3000);
+// if the oauth automation is enabled, use puppeteer to run it
+// otherwise, just leave the app to the user
+if (process.env.AUTO_OAUTH) {
+  // first sleep for 3 seconds to allow librespot to start
+  setTimeout(spotifyLogin, 3000);
+}
 
 async function spotifyLogin() {
   // Read oauth.txt

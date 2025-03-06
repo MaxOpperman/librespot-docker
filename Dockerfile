@@ -166,8 +166,7 @@ COPY app/bin/post-event-data.sh /app/bin/
 
 RUN chmod u+x /app/bin/*.sh
 
-# Copy the .env file to the container
-COPY app/bin/oauth/.env /app/bin/.env
+# Copy the puppeteer oauth file to the container
 COPY app/bin/oauth/puppeteer-oauth.js /app/bin/puppeteer-oauth.js
 
 # Copy the package.json and package-lock.json (if available) first, for npm install
