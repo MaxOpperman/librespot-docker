@@ -74,6 +74,10 @@ VARIABLE|DEFAULT|NOTES
 :---|:---|:---
 SPOTIFY_USERNAME||Your Spotify username. Required only if you want to disable discovery (DEPRECATED).
 SPOTIFY_PASSWORD||Your Spotify password. Required only if you want to disable discovery (DEPRECATED).
+ENABLE_OAUTH||Set to `headless` to enable OAUTH authentication. You will need to run the container interactively the first time. Recommended to enable when caching is also enabled.
+AUTO_OAUTH||Set to `Y` or `y` to automatically log in with OAUTH authentication. Uses the email and password from `SPOTIFY_OAUTH_EMAIL` and `SPOTIFY_OAUTH_PWD`.
+SPOTIFY_OAUTH_EMAIL||Your Spotify email for the OAUTH authentication.
+SPOTIFY_OAUTH_PWD||Your Spotify password for the OAUTH authentication.
 BITRATE|160|Bitrate (kbps): `96`, `160`, `320`. Defaults to `160`.
 BACKEND|alsa|Audio backend to use. Use `?` to list options. Currently possible values are `alsa`, `pulseaudio` and `pipe`.
 INITIAL_VOLUME||Initial volume in % from 0-100. Default for softvol: `50`. For the `alsa` mixer: the current volume.
@@ -114,10 +118,9 @@ PASSTHROUGH||Pass a raw stream to the output.  works with the pipe and subproces
 PUID||Set this value the the user which should run the application, defaults to `1000` if not set when using the `pulseaudio` backend
 PGID||Set this value the the user which should run the application, defaults to `1000` if not set when using the `pulseaudio` backend
 AUDIO_GID||Specifies the gid for the group `audio`, it is required if you want to use, e.g., the `alsa` backend in user mode. Refer to [this page](https://github.com/GioF71/squeezelite-docker/blob/main/doc/example-alsa-user-mode.md) from my squeezelite-docker repository for more details.
-PARAMETER_PRIORITY||Where to look for a parameter first: `env` or `file`. For example, the `credentials.txt` file compared to `SPOTIFY_USERNAME` and `SPOTIFY_PASSWORD` environment variables. Defaults to `file`, meaning that each file is considered if it exists and if it contains the required values.
+PARAMETER_PRIORITY||Where to look for a parameter first: `env` or `file`. For example, the `credentials.txt` file compared to `SPOTIFY_USERNAME` and `SPOTIFY_PASSWORD` environment variables. Defaults to `file`, meaning that each file is considered if it exists and if it contains the required values (DEPRECATED).
 ONEVENT_COMMAND||Specifies the name of a user defined script/executable that will be executed whenever a player event occurs. User defined scripts must be mounted to the `/userscripts/` folder and be made executable via `chmod u+x`. Internally maps to the `--onevent` flag of `librespot`. More info about usage can be found in [librespot's player event handler](https://github.com/librespot-org/librespot/blob/dev/src/player_event_handler.rs).
 ONEVENT_POST_ENDPOINT||Send a `POST` request with event data to the specified endpoint URL whenever a player event occurs. Request body is `json` encoded and contains all available fields specified by the [librespot's player event handler](https://github.com/librespot-org/librespot/blob/dev/src/player_event_handler.rs). Will be ignored if `ONEVENT_COMMAND` is set.
-ENABLE_OAUTH||Set to `headless` to enable OAUTH authentication. You will need to run the container interactively the first time. Recommended to enable when caching is also enabled.
 LOG_COMMAND_LINE||Set to  `Y` or `y` to enable, `N` or `n` to disable. Defaults to `Y`.
 ADDITIONAL_ARGUMENTS||Use this to add additional arguments to be appended to the command line
 
@@ -161,11 +164,11 @@ Using docker-compose is preferable for multiple reason, a notable one is the fac
 Among the `docker-compose.yaml` files hereby presented, those which use credentials require a `.env` file at the same level of the `docker-compose.yaml` file itself. The `.env` file should have the following format:
 
 ```text
-SPOTIFY_USERNAME=myusername
-SPOTIFY_PASSWORD=mypassword
+SPOTIFY_OAUTH_EMAIL=email@example.com
+SPOTIFY_OAUTH_PWD=password
 ```
 
-Please note that username and password is deprecated as an authentication method in librespot.  
+Please note that username and password are used in the OAUTH authentication method and the `AUTO_OAUTH` flag must be set to `Y` or `y`.
 
 ##### Docker-compose in Alsa mode
 
@@ -284,11 +287,6 @@ docker-compose run librespot
 assuming that `librespot` is the name of the service. Tune the command if needed.  
 This command will let you see the container logs. You will have to open your browser at the displayed link, authenticated with Spotify and authorize the device, then paste the redirect URL to the terminal.  
 After the first start, you can start the container as usual using `docker-compose up -d`.
-
-### Credentials file (DEPRECATED)
-
-Credentials can be stored on a separate file and mounted as `/user/config/credentials.txt`. The format is the same as the standard `.env` file.  
-By defaults, `SPOTIFY_USERNAME` and `SPOTIFY_PASSWORD` entries found in this file have the priority against the correspondent environment variables, unless you set the variable `PARAMETER_PRIORITY` to `env`.
 
 ## Known issues
 
